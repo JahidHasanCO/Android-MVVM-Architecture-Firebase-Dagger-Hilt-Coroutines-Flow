@@ -1,31 +1,24 @@
 package dev.jahidhasanco.firebasemvvm.viewmodel
 
-import android.app.Application
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.google.firebase.auth.FirebaseUser
+import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jahidhasanco.firebasemvvm.repository.AuthRepository
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class LoggedInViewModel constructor(
-    application: Application,
+@HiltViewModel
+class LoggedInViewModel
+@Inject
+constructor(
     private var authRepository: AuthRepository
 ) : ViewModel() {
 
-    private var userLiveData: MutableLiveData<FirebaseUser> = MutableLiveData()
-    private var loggedOutLiveData: MutableLiveData<Boolean> = MutableLiveData()
-
-    init {
-        authRepository = AuthRepository(application)
-        userLiveData = authRepository.getUserLiveData()
-        loggedOutLiveData = authRepository.getLoggedOutLiveData()
-    }
-
     fun logOut() {
-        authRepository.logOut()
+        viewModelScope.launch {
+            authRepository.logOut()
+        }
     }
 
-    fun getUserLiveData() = userLiveData
-
-    fun getLoggedOutLiveData() = loggedOutLiveData
 
 }

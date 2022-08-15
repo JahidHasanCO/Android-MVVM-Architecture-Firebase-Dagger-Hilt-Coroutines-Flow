@@ -1,13 +1,18 @@
 package dev.jahidhasanco.firebasemvvm
 
+import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.coroutineScope
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jahidhasanco.firebasemvvm.databinding.ActivityMainBinding
+import dev.jahidhasanco.firebasemvvm.ui.activity.DashActivity
 import dev.jahidhasanco.firebasemvvm.utils.displayToast
 import dev.jahidhasanco.firebasemvvm.viewmodel.AuthViewModel
+import dev.jahidhasanco.firebasemvvm.viewmodel.LoggedInViewModel
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -16,6 +21,7 @@ class MainActivity : AppCompatActivity() {
 
     private val authViewModel: AuthViewModel by viewModels()
 
+
     private var email = ""
     private var password = ""
 
@@ -23,18 +29,29 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
 
+        authViewModel.loggedUser()
 
-        authViewModel.getUserLiveData().observe(this) {
-            if (it != null) {
-                // Navigate to Other Activity
-                this.displayToast("SuccessFully Pre-Logged")
+        lifecycle.coroutineScope.launchWhenCreated {
+            authViewModel.user.collect {
+                if (it.isLoading) {
+                    binding.authContainer.progressCircular.visibility = View.VISIBLE
+                }
+                if (it.error.isNotBlank()) {
+                    binding.authContainer.progressCircular.visibility = View.GONE
+                    this@MainActivity.displayToast(it.error)
+                }
+                it.data?.let {
+                    binding.authContainer.progressCircular.visibility = View.GONE
+                    startActivity(Intent(this@MainActivity, DashActivity::class.java))
+                }
             }
         }
 
-        binding.authContainer.loginRegisterLogin.setOnClickListener {
+
+        binding.authContainer.btnSignIn.setOnClickListener {
             with(binding.authContainer) {
-                email = loginRegisterEmail.text.toString()
-                password = loginRegisterPassword.text.toString()
+                email = edtEmailID.text.toString()
+                password = edtPassword.text.toString()
                 if (email.isNotEmpty() && password.isNotEmpty()) {
                     authViewModel.login(email, password)
                 } else {
@@ -43,10 +60,10 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        binding.authContainer.loginRegisterRegister.setOnClickListener {
+        binding.authContainer.btnSignUp.setOnClickListener {
             with(binding.authContainer) {
-                email = loginRegisterEmail.text.toString()
-                password = loginRegisterPassword.text.toString()
+                email = edtEmailID.text.toString()
+                password = edtPassword.text.toString()
                 if (email.isNotEmpty() && password.isNotEmpty()) {
                     authViewModel.register(email, password)
                 } else {

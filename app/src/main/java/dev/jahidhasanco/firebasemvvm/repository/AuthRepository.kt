@@ -4,7 +4,12 @@ import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import dev.jahidhasanco.firebasemvvm.utils.displayToast
+import com.google.firebase.crashlytics.buildtools.reloc.org.apache.http.HttpException
+import dev.jahidhasanco.firebasemvvm.utils.Resource
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.tasks.await
+import java.io.IOException
 import javax.inject.Inject
 
 class AuthRepository
@@ -12,36 +17,52 @@ class AuthRepository
 constructor(private var appContext: Context) {
 
     private var firebaseAuth: FirebaseAuth = FirebaseAuth.getInstance()
-    private var userLiveData: MutableLiveData<FirebaseUser> = MutableLiveData()
     private var loggedOutLiveData: MutableLiveData<Boolean> = MutableLiveData()
+
 
     init {
         if (firebaseAuth.currentUser != null) {
-            userLiveData.postValue(firebaseAuth.currentUser)
             loggedOutLiveData.postValue(false)
         }
     }
 
-    fun register(email: String, password: String) {
-        firebaseAuth.createUserWithEmailAndPassword(email, password)
-            .addOnCompleteListener {
-                if (it.isSuccessful) {
-                    userLiveData.postValue(firebaseAuth.currentUser)
-                } else {
-                    appContext.applicationContext.displayToast("Registration Failure ${it.exception!!.message}")
-                }
-            }
+    fun register(email: String, password: String): Flow<Resource<FirebaseUser>> = flow {
+        emit(Resource.Loading())
+
+        try {
+            val result = firebaseAuth.createUserWithEmailAndPassword(email, password).await()
+            emit((result.user?.let {
+                Resource.Success(data = it)
+            }!!))
+        } catch (e: HttpException) {
+            emit(Resource.Error(message = e.localizedMessage ?: "Unknown Error"))
+        } catch (e: IOException) {
+            emit(Resource.Error(message = e.localizedMessage ?: "Check Your Internet Connection"))
+        } catch (e: Exception) {
+            emit(Resource.Error(message = e.localizedMessage ?: ""))
+        }
+
+
     }
 
-    fun login(email: String, password: String) {
-        firebaseAuth.signInWithEmailAndPassword(email, password)
-            .addOnCompleteListener {
-                if (it.isSuccessful) {
-                    userLiveData.postValue(firebaseAuth.currentUser)
-                } else {
-                    appContext.applicationContext.displayToast("Login Failure ${it.exception!!.message}")
-                }
-            }
+    fun login(email: String, password: String): Flow<Resource<FirebaseUser>> = flow {
+
+        emit(Resource.Loading())
+
+        try {
+            val result = firebaseAuth.signInWithEmailAndPassword(email, password).await()
+            emit((result.user?.let {
+                Resource.Success(data = it)
+            }!!))
+
+        } catch (e: HttpException) {
+            emit(Resource.Error(message = e.localizedMessage ?: "Unknown Error"))
+        } catch (e: IOException) {
+            emit(Resource.Error(message = e.localizedMessage ?: "Check Your Internet Connection"))
+        } catch (e: Exception) {
+            emit(Resource.Error(message = e.localizedMessage ?: ""))
+        }
+
     }
 
     fun logOut() {
@@ -49,7 +70,17 @@ constructor(private var appContext: Context) {
         loggedOutLiveData.postValue(true)
     }
 
-    fun getUserLiveData() = userLiveData
+    fun getLoggedUser(): Flow<Resource<FirebaseUser>> = flow {
 
-    fun getLoggedOutLiveData() = loggedOutLiveData
+        emit(Resource.Loading())
+
+        if (firebaseAuth.currentUser != null) {
+            loggedOutLiveData.postValue(false)
+            emit(Resource.Success(data = firebaseAuth.currentUser!!))
+        } else {
+            emit(Resource.Error(""))
+        }
+
+    }
+
 }
