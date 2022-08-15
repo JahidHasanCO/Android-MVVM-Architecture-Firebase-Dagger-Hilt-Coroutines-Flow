@@ -5,6 +5,9 @@ import androidx.lifecycle.MutableLiveData
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import dev.jahidhasanco.firebasemvvm.utils.displayToast
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class AuthRepository
@@ -22,26 +25,26 @@ constructor(private var appContext: Context) {
         }
     }
 
-    fun register(email: String, password: String) {
-        firebaseAuth.createUserWithEmailAndPassword(email, password)
-            .addOnCompleteListener {
-                if (it.isSuccessful) {
-                    userLiveData.postValue(firebaseAuth.currentUser)
-                } else {
-                    appContext.applicationContext.displayToast("Registration Failure ${it.exception!!.message}")
-                }
+    suspend fun register(email: String, password: String) {
+        try {
+            val result = firebaseAuth.createUserWithEmailAndPassword(email, password).await()
+            userLiveData.postValue(result.user)
+        } catch (e: Exception) {
+            withContext(Dispatchers.Main) {
+                appContext.applicationContext.displayToast("Registration Failure ${e.message}")
             }
+        }
     }
 
-    fun login(email: String, password: String) {
-        firebaseAuth.signInWithEmailAndPassword(email, password)
-            .addOnCompleteListener {
-                if (it.isSuccessful) {
-                    userLiveData.postValue(firebaseAuth.currentUser)
-                } else {
-                    appContext.applicationContext.displayToast("Login Failure ${it.exception!!.message}")
-                }
+    suspend fun login(email: String, password: String) {
+        try {
+            val result = firebaseAuth.signInWithEmailAndPassword(email, password).await()
+            userLiveData.postValue(result.user)
+        } catch (e: Exception) {
+            withContext(Dispatchers.Main) {
+                appContext.applicationContext.displayToast("Login Failure ${e.message}")
             }
+        }
     }
 
     fun logOut() {

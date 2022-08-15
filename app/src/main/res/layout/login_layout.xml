@@ -5,40 +5,75 @@
 
     </data>
 
-    <LinearLayout
-        android:id="@+id/authLayoutContainer"
-        android:orientation="vertical"
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
+        android:layout_height="match_parent"
+        android:layout_margin="16dp">
+        <ProgressBar
+            android:id="@+id/progress_circular"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toTopOf="@+id/edtEmailID"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView" />
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Firebase Authentication"
+            android:textColor="@color/purple_500"
+            android:textSize="24sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
         <EditText
-            android:id="@+id/loginRegister_email"
+            android:id="@+id/edtEmailID"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="textEmailAddress"
-            android:hint="Email"
-            />
-
+            android:layout_height="50dp"
+            android:background="#F4F4F4"
+            android:hint="Enter email id"
+            android:paddingStart="4dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/guideline" />
         <EditText
-            android:id="@+id/loginRegister_password"
+            android:id="@+id/edtPassword"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="textPassword"
-            android:hint="Password" />
-
+            android:layout_height="50dp"
+            android:layout_marginTop="8dp"
+            android:background="#F4F4F4"
+            android:hint="Enter password"
+            android:paddingStart="4dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/edtEmailID" />
         <Button
-            android:id="@+id/loginRegister_login"
-            android:layout_width="match_parent"
+            android:id="@+id/btnSignUp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Login" />
-
+            android:layout_marginTop="16dp"
+            android:text="Sign up"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/edtPassword" />
         <Button
-            android:id="@+id/loginRegister_register"
-            android:layout_width="match_parent"
+            android:id="@+id/btnSignIn"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Register" />
-
-    </LinearLayout>
+            android:layout_marginTop="16dp"
+            android:text="Sign in"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btnSignUp" />
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.4" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

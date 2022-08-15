@@ -1,11 +1,13 @@
 package dev.jahidhasanco.firebasemvvm
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jahidhasanco.firebasemvvm.databinding.ActivityMainBinding
+import dev.jahidhasanco.firebasemvvm.ui.activity.DashActivity
 import dev.jahidhasanco.firebasemvvm.utils.displayToast
 import dev.jahidhasanco.firebasemvvm.viewmodel.AuthViewModel
 
@@ -27,14 +29,15 @@ class MainActivity : AppCompatActivity() {
         authViewModel.getUserLiveData().observe(this) {
             if (it != null) {
                 // Navigate to Other Activity
-                this.displayToast("SuccessFully Pre-Logged")
+                startActivity(Intent(this,DashActivity::class.java))
+                finish()
             }
         }
 
-        binding.authContainer.loginRegisterLogin.setOnClickListener {
+        binding.authContainer.btnSignIn.setOnClickListener {
             with(binding.authContainer) {
-                email = loginRegisterEmail.text.toString()
-                password = loginRegisterPassword.text.toString()
+                email = edtEmailID.text.toString()
+                password = edtPassword.text.toString()
                 if (email.isNotEmpty() && password.isNotEmpty()) {
                     authViewModel.login(email, password)
                 } else {
@@ -43,10 +46,10 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        binding.authContainer.loginRegisterRegister.setOnClickListener {
+        binding.authContainer.btnSignUp.setOnClickListener {
             with(binding.authContainer) {
-                email = loginRegisterEmail.text.toString()
-                password = loginRegisterPassword.text.toString()
+                email = edtEmailID.text.toString()
+                password = edtPassword.text.toString()
                 if (email.isNotEmpty() && password.isNotEmpty()) {
                     authViewModel.register(email, password)
                 } else {

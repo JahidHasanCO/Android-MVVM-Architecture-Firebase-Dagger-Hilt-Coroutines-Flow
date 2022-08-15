@@ -2,9 +2,11 @@ package dev.jahidhasanco.firebasemvvm.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseUser
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.jahidhasanco.firebasemvvm.repository.AuthRepository
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -21,11 +23,15 @@ constructor(
     }
 
     fun login(email: String, password: String) {
-        authRepository.login(email, password)
+        viewModelScope.launch {
+            authRepository.login(email, password)
+        }
     }
 
     fun register(email: String, password: String) {
-        authRepository.register(email, password)
+        viewModelScope.launch {
+            authRepository.register(email, password)
+        }
     }
 
     fun getUserLiveData() = userLiveData

@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="dev.jahidhasanco.firebasemvvm">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:name=".BaseApp"
@@ -16,6 +16,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.FireBaseMVVM"
         tools:targetApi="31">
+        <activity
+            android:name=".ui.activity.DashActivity"
+            android:exported="false" />
         <activity
             android:name=".MainActivity"
             android:exported="true">
