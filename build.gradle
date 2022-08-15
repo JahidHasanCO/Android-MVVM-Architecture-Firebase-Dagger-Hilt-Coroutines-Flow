@@ -1,6 +1,7 @@
 buildscript {
     dependencies {
         classpath 'com.google.gms:google-services:4.3.13'
+        classpath 'com.google.dagger:hilt-android-gradle-plugin:2.40.1'
     }
 }// Top-level build file where you can add configuration options common to all sub-projects/modules.
 
