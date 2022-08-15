@@ -1,36 +1,35 @@
 package dev.jahidhasanco.firebasemvvm
 
 import android.os.Bundle
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import dagger.hilt.android.AndroidEntryPoint
 import dev.jahidhasanco.firebasemvvm.databinding.ActivityMainBinding
 import dev.jahidhasanco.firebasemvvm.utils.displayToast
 import dev.jahidhasanco.firebasemvvm.viewmodel.AuthViewModel
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
 
-    private lateinit var authViewModel: AuthViewModel
+    private val authViewModel: AuthViewModel by viewModels()
 
-    var email = ""
-    var password = ""
+    private var email = ""
+    private var password = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
 
-        authViewModel = ViewModelProviders.of(this)[AuthViewModel::class.java]
 
-        authViewModel.getUserLiveData().observe(this, Observer {
-
+        authViewModel.getUserLiveData().observe(this) {
             if (it != null) {
                 // Navigate to Other Activity
                 this.displayToast("SuccessFully Pre-Logged")
             }
-        })
+        }
 
         binding.authContainer.loginRegisterLogin.setOnClickListener {
             with(binding.authContainer) {

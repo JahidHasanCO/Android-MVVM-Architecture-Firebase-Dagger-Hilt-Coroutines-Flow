@@ -1,9 +1,10 @@
-package dev.jahidhasanco.firebasemvvm.repository
+package dev.jahidhasanco.firebasemvvm.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.firebase.auth.FirebaseUser
+import dev.jahidhasanco.firebasemvvm.repository.AuthRepository
 
 class LoggedInViewModel constructor(
     application: Application,

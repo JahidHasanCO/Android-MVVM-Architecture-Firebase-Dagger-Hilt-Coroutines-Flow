@@ -1,12 +1,15 @@
 package dev.jahidhasanco.firebasemvvm.repository
 
-import android.app.Application
+import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import dev.jahidhasanco.firebasemvvm.utils.displayToast
+import javax.inject.Inject
 
-class AuthRepository constructor(private var application: Application) {
+class AuthRepository
+@Inject
+constructor(private var appContext: Context) {
 
     private var firebaseAuth: FirebaseAuth = FirebaseAuth.getInstance()
     private var userLiveData: MutableLiveData<FirebaseUser> = MutableLiveData()
@@ -25,7 +28,7 @@ class AuthRepository constructor(private var application: Application) {
                 if (it.isSuccessful) {
                     userLiveData.postValue(firebaseAuth.currentUser)
                 } else {
-                    application.applicationContext.displayToast("Registration Failure ${it.exception!!.message}")
+                    appContext.applicationContext.displayToast("Registration Failure ${it.exception!!.message}")
                 }
             }
     }
@@ -36,7 +39,7 @@ class AuthRepository constructor(private var application: Application) {
                 if (it.isSuccessful) {
                     userLiveData.postValue(firebaseAuth.currentUser)
                 } else {
-                    application.applicationContext.displayToast("Login Failure ${it.exception!!.message}")
+                    appContext.applicationContext.displayToast("Login Failure ${it.exception!!.message}")
                 }
             }
     }
