@@ -2,11 +2,9 @@ package dev.jahidhasanco.firebasemvvm
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.coroutineScope
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jahidhasanco.firebasemvvm.data.model.User
 import dev.jahidhasanco.firebasemvvm.databinding.ActivityMainBinding
@@ -30,24 +28,13 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
 
-        authViewModel.loggedUser()
-
-        lifecycle.coroutineScope.launchWhenCreated {
-            authViewModel.user.collect {
-                if (it.isLoading) {
-                    binding.authContainer.progressCircular.visibility = View.VISIBLE
-                }
-                if (it.error.isNotBlank()) {
-                    binding.authContainer.progressCircular.visibility = View.GONE
-                    this@MainActivity.displayToast(it.error)
-                }
-                it.data?.let {
-                    binding.authContainer.progressCircular.visibility = View.GONE
-                    startActivity(Intent(this@MainActivity, DashActivity::class.java))
-                }
+        authViewModel.getUserLiveData().observe(this) {
+            if (it != null) {
+                // Navigate to Other Activity
+                startActivity(Intent(this, DashActivity::class.java))
+                finish()
             }
         }
-
 
         binding.authContainer.btnSignIn.setOnClickListener {
             with(binding.authContainer) {
@@ -76,13 +63,17 @@ class MainActivity : AppCompatActivity() {
 
                 if (email.isNotEmpty() && password.isNotEmpty()) {
                     authViewModel.register(email, password)
-                    userViewModel.uploadUserData(user)
+                    userDataStoreRemote(user)
                 } else {
                     this@MainActivity.displayToast("Email and Password Must be Entered.")
                 }
             }
         }
 
+    }
+
+    private fun userDataStoreRemote(user: User) {
+        userViewModel.uploadUserData(user)
     }
 
 }
