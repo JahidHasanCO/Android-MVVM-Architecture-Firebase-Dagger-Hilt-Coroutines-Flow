@@ -87,7 +87,7 @@ constructor() {
             loggedOutLiveData.postValue(false)
             emit(Resource.Success(data = firebaseAuth.currentUser!!))
         } else {
-            emit(Resource.Error(""))
+            emit(Resource.Error("Not Logged"))
         }
 
     }

@@ -9,12 +9,14 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.coroutineScope
+import dagger.hilt.android.AndroidEntryPoint
 import dev.jahidhasanco.firebasemvvm.MainActivity
 import dev.jahidhasanco.firebasemvvm.R
 import dev.jahidhasanco.firebasemvvm.databinding.ActivitySplashScreenBinding
 import dev.jahidhasanco.firebasemvvm.viewmodel.AuthViewModel
 
 @SuppressLint("CustomSplashScreen")
+@AndroidEntryPoint
 class SplashScreenActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySplashScreenBinding
@@ -26,6 +28,7 @@ class SplashScreenActivity : AppCompatActivity() {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_splash_screen)
 
         authViewModel.loggedUser()
+
         lifecycle.coroutineScope.launchWhenCreated {
             authViewModel.user.collect {
                 if (it.isLoading) {

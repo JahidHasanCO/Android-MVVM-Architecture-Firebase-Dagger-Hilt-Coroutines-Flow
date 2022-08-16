@@ -7,8 +7,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.coroutineScope
-import coil.load
-import coil.transform.CircleCropTransformation
+import com.bumptech.glide.Glide
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jahidhasanco.firebasemvvm.MainActivity
 import dev.jahidhasanco.firebasemvvm.R
@@ -34,6 +33,7 @@ class DashActivity : AppCompatActivity() {
         lifecycle.coroutineScope.launchWhenCreated {
             authViewModel.userData.collect {
                 if (it.isLoading) {
+                    binding.mainContainer.visibility = View.INVISIBLE
                     binding.progressCircular.visibility = View.VISIBLE
                 }
                 if (it.error.isNotBlank()) {
@@ -42,14 +42,17 @@ class DashActivity : AppCompatActivity() {
                 }
                 it.data?.let { _user ->
                     binding.progressCircular.visibility = View.GONE
+                    binding.mainContainer.visibility = View.VISIBLE
                     binding.name.text = _user.name
                     binding.email.text = _user.email
                     binding.address.text = _user.address
-                    binding.profileImage.load(_user.image) {
-                        crossfade(true)
-                        placeholder(R.drawable.ic_launcher_foreground)
-                        transformations(CircleCropTransformation())
-                    }
+                    Glide
+                        .with(this@DashActivity)
+                        .load(_user.image)
+                        .centerCrop()
+                        .placeholder(R.drawable.ic_launcher_foreground)
+                        .into(binding.profileImage);
+
                 }
             }
         }
