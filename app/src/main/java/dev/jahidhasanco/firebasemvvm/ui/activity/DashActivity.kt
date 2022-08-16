@@ -12,24 +12,25 @@ import dev.jahidhasanco.firebasemvvm.MainActivity
 import dev.jahidhasanco.firebasemvvm.R
 import dev.jahidhasanco.firebasemvvm.databinding.ActivityDashBinding
 import dev.jahidhasanco.firebasemvvm.utils.displayToast
+import dev.jahidhasanco.firebasemvvm.viewmodel.AuthViewModel
 import dev.jahidhasanco.firebasemvvm.viewmodel.LoggedInViewModel
-import dev.jahidhasanco.firebasemvvm.viewmodel.UserViewModel
 
 @AndroidEntryPoint
 class DashActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityDashBinding
     private val loggedInViewModel: LoggedInViewModel by viewModels()
-    private val userViewModel: UserViewModel by viewModels()
+    private val authViewModel: AuthViewModel by viewModels()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_dash)
 
-        userViewModel.getUserData()
+        authViewModel.getUserData()
 
         lifecycle.coroutineScope.launchWhenCreated {
-            userViewModel.userData.collect {
+            authViewModel.userData.collect {
                 if (it.isLoading) {
                     binding.progressCircular.visibility = View.VISIBLE
                 }
