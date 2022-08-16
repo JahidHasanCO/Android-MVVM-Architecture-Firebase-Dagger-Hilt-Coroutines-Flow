@@ -21,5 +21,7 @@ object AppModule {
     }
 
     @Provides
-    fun provideAuthRepository(@ApplicationContext app: Context) = AuthRepository(app)
+    fun provideAuthRepository() = AuthRepository()
+
+
 }

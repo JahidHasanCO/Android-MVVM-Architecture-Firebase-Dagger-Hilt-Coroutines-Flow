@@ -1,10 +1,12 @@
 package dev.jahidhasanco.firebasemvvm.repository
 
-import android.content.Context
+
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.crashlytics.buildtools.reloc.org.apache.http.HttpException
+import com.google.firebase.firestore.FirebaseFirestore
+import dev.jahidhasanco.firebasemvvm.data.model.User
 import dev.jahidhasanco.firebasemvvm.utils.Resource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -14,10 +16,11 @@ import javax.inject.Inject
 
 class AuthRepository
 @Inject
-constructor(private var appContext: Context) {
+constructor() {
 
     private var firebaseAuth: FirebaseAuth = FirebaseAuth.getInstance()
     private var loggedOutLiveData: MutableLiveData<Boolean> = MutableLiveData()
+    private val fireStoreDatabase = FirebaseFirestore.getInstance()
 
 
     init {
@@ -26,14 +29,19 @@ constructor(private var appContext: Context) {
         }
     }
 
-    fun register(email: String, password: String): Flow<Resource<FirebaseUser>> = flow {
+    fun register(email: String, password: String, user: User): Flow<Resource<FirebaseUser>> = flow {
         emit(Resource.Loading())
 
         try {
             val result = firebaseAuth.createUserWithEmailAndPassword(email, password).await()
+            fireStoreDatabase.collection("User")
+                .document(firebaseAuth.currentUser!!.uid)
+                .set(user).await()
+
             emit((result.user?.let {
                 Resource.Success(data = it)
             }!!))
+            loggedOutLiveData.postValue(false)
         } catch (e: HttpException) {
             emit(Resource.Error(message = e.localizedMessage ?: "Unknown Error"))
         } catch (e: IOException) {
@@ -54,6 +62,7 @@ constructor(private var appContext: Context) {
             emit((result.user?.let {
                 Resource.Success(data = it)
             }!!))
+            loggedOutLiveData.postValue(false)
 
         } catch (e: HttpException) {
             emit(Resource.Error(message = e.localizedMessage ?: "Unknown Error"))
@@ -82,5 +91,30 @@ constructor(private var appContext: Context) {
         }
 
     }
+
+    fun getUserData(): Flow<Resource<User>> = flow {
+        emit(Resource.Loading())
+        if (firebaseAuth.currentUser != null) {
+            try {
+                val snapshot = fireStoreDatabase.collection("User")
+                    .document(firebaseAuth.currentUser!!.uid).get().await()
+                if (snapshot.exists()) {
+                    val user: User? = snapshot.toObject(User::class.java)
+                    emit(Resource.Success(data = user!!))
+                }
+            } catch (e: HttpException) {
+                emit(Resource.Error(message = e.localizedMessage ?: "Unknown Error"))
+            } catch (e: IOException) {
+                emit(
+                    Resource.Error(
+                        message = e.localizedMessage ?: "Check Your Internet Connection"
+                    )
+                )
+            } catch (e: Exception) {
+                emit(Resource.Error(message = e.localizedMessage ?: ""))
+            }
+        }
+    }
+
 
 }
