@@ -7,6 +7,8 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.coroutineScope
+import coil.load
+import coil.transform.CircleCropTransformation
 import dagger.hilt.android.AndroidEntryPoint
 import dev.jahidhasanco.firebasemvvm.MainActivity
 import dev.jahidhasanco.firebasemvvm.R
@@ -40,7 +42,14 @@ class DashActivity : AppCompatActivity() {
                 }
                 it.data?.let { _user ->
                     binding.progressCircular.visibility = View.GONE
+                    binding.name.text = _user.name
                     binding.email.text = _user.email
+                    binding.address.text = _user.address
+                    binding.profileImage.load(_user.image) {
+                        crossfade(true)
+                        placeholder(R.drawable.ic_launcher_foreground)
+                        transformations(CircleCropTransformation())
+                    }
                 }
             }
         }

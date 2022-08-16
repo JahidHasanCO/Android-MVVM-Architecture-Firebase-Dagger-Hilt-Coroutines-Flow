@@ -28,7 +28,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
 
-        authViewModel.loggedUser()
         lifecycle.coroutineScope.launchWhenCreated {
             authViewModel.user.collect {
                 if (it.isLoading) {
