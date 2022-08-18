@@ -25,7 +25,7 @@ View-Model)***](https://developer.android.com/jetpack/docs/guide#recommended-app
 
 ## App Screen
 
-<img src="https://github.com/JahidHasanCO/Android-MVVM-Architecture-Firebase-Dagger-Hilt-Coroutines-Flow/blob/master/ART/auth.png" width="270" height="585">    <img src="https://github.com/JahidHasanCO/Android-MVVM-Architecture-Firebase-Dagger-Hilt-Coroutines-Flow/blob/master/ART/main.png" width="270" height="585">
+<img src="https://github.com/JahidHasanCO/Android-MVVM-Architecture-Firebase-Dagger-Hilt-Coroutines-Flow/blob/master/ART/auth.png" >    <img src="https://github.com/JahidHasanCO/Android-MVVM-Architecture-Firebase-Dagger-Hilt-Coroutines-Flow/blob/master/ART/main.png">
 
 
 ## Contact 📩
