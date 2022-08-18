@@ -1,5 +1,6 @@
 # Android MVVM Architecture - Firebase, DaggerHilt, Coroutines Flow
 
+MVVM with Clean Architecture is pretty good in such cases. It goes one step further in separating the responsibilities of your code base. It clearly abstracts the logic of the actions that can be performed in your app.
 
 ## Architecture 🗼
 
