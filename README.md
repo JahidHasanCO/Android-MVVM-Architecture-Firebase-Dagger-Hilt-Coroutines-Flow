@@ -1,4 +1,4 @@
-# FireBase-MVVM
+# Android MVVM Architecture - Firebase, DaggerHilt-Coroutines-Flow
 
 
 ## Architecture 🗼
@@ -22,6 +22,11 @@ View-Model)***](https://developer.android.com/jetpack/docs/guide#recommended-app
 - [Coroutines Android](https://developer.android.com/kotlin/coroutines) - A coroutine is a concurrency design pattern that you can use on Android to simplify code that executes asynchronously. Coroutines were added to Kotlin in version 1.3 and are based on established concepts from other languages.
 - [Kotlin flows](https://developer.android.com/kotlin/flow) - In coroutines, a flow is a type that can emit multiple values sequentially, as opposed to suspend functions that return only a single value. For example, you can use a flow to receive live updates from a database.
 - [Material Components for Android](https://github.com/material-components/material-components-android) - Modular and customizable Material Design UI components for Android.
+
+## App Screen
+
+<img src="https://github.com/JahidHasanCO/Calculator-App/blob/master/ART/Calculator.png" width="270" height="585">    <img src="https://github.com/JahidHasanCO/Calculator-App/blob/master/ART/Calculator-Dark.png" width="270" height="585">
+
 
 ## Contact 📩
 
